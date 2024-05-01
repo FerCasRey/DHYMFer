@@ -1,5 +1,6 @@
 import pygame
 import random
+import sys
 
 # Initialize Pygame
 pygame.init()
@@ -48,7 +49,7 @@ def main():
     ball_direction = [random.choice([-1, 1]), random.choice([-1, 1])]
 
     # Dictionary to keep track of pressed keys
-    keys = {pygame.K_w: False, pygame.K_s: False, pygame.K_UP: False, pygame.K_DOWN: False}
+    keys = {pygame.K_w: False, pygame.K_s: False, pygame.K_UP: False, pygame.K_DOWN: False, pygame.K_ESCAPE: False}
 
     # Game loop
     while True:
@@ -65,6 +66,9 @@ def main():
             elif event.type == pygame.KEYUP:
                 if event.key in keys:
                     keys[event.key] = False
+            elif event.type == pygame.K_ESCAPE:
+                if event.key in keys:
+                    keys[event.key] = True
 
         # Move paddles based on key states
         if keys[pygame.K_w] and paddle1.top > 0:
@@ -75,6 +79,9 @@ def main():
             paddle2.y -= PADDLE_SPEED
         if keys[pygame.K_DOWN] and paddle2.bottom < HEIGHT:
             paddle2.y += PADDLE_SPEED
+        if keys[pygame.K_ESCAPE]:
+            pygame.quit()
+            sys.exit()
 
         # Move ball
         move_ball(ball, BALL_SPEED, ball_direction)

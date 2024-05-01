@@ -6,7 +6,7 @@ import sys
 pygame.init()
 
 # Set up window
-WINDOW_WIDTH = 400
+WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 600
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Lanzador de HYMFer')
@@ -15,27 +15,45 @@ pygame.display.set_caption('Lanzador de HYMFer')
 font = pygame.font.Font(None, 30)
 
 # Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+global colorInd1
+colorInd1 = 0
+global colorInd2
+colorInd2 = 0
+
+color1 = [(255, 255, 255), (0,0,0), (0,40,255), (255,0,0), (0,255,0), (51,88,34)]
+color2 = [(0, 0, 0), (255,255,255), (0,0,0), (0,0,0), (0,0,0), (181,165,86)]
+theme = ['Noche', 'Día', 'Aqua', 'Igni', 'Matcha', 'GBoy']
+colorInd1Len = len(color1) - 1
+colorInd2Len = len(color2) - 1
+
+def changeColor():
+    global colorInd1
+    global colorInd2
+    if colorInd1 < colorInd1Len: 
+        colorInd1 += 1
+        colorInd2 += 1 
+    else:
+        colorInd1 = 0
+        colorInd2 = 0
 
 def show_menu():
-    window.fill(BLACK)
-    title_text = font.render("Bienvenido al lanzador de HYMFer", True, WHITE)
+    window.fill(color2[colorInd2])
+    title_text = font.render("Bienvenido al lanzador de HYMFer", True, color1[colorInd1])
     window.blit(title_text, (50, 50))
 
-    option1_text = font.render("1. Ejecutar Pong", True, WHITE)
+    option1_text = font.render("1. Ejecutar Pong", True, color1[colorInd1])
     window.blit(option1_text, (50, 100))
 
-    option2_text = font.render("2. Ejecutar Space Invaders", True, WHITE)
+    option2_text = font.render("2. Ejecutar Space Invaders", True, color1[colorInd1])
     window.blit(option2_text, (50, 150))
 
-    option3_text = font.render("3. Configuración", True, WHITE)
+    option3_text = font.render("3. Configuración", True, color1[colorInd1])
     window.blit(option3_text, (50, 200))
 
-    option4_text = font.render("4. Créditos y más", True, WHITE)
+    option4_text = font.render("4. Créditos y más", True, color1[colorInd1])
     window.blit(option4_text, (50, 250))
 
-    option5_text = font.render("5. Cerrar", True, WHITE)
+    option5_text = font.render("5. Cerrar", True, color1[colorInd1])
     window.blit(option5_text, (50, 300))
 
 def option1():
@@ -54,7 +72,7 @@ def option3():
     config()
 
 def option4():
-    print("Mostrando créditos")
+    print("Mostrando Créditos")
     credits()
     # Add your code for Option 3 here
 
@@ -98,11 +116,25 @@ def config():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
+                if event.key == pygame.K_c:
+                    changeColor()
 
-        window.fill(BLACK)
-        optText = font.render("- Configuración - ", True, WHITE)
+
+
+        window.fill(color2[colorInd2])
+        optText = font.render("- Configuración - ", True, color1[colorInd1])
         optRec = optText.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(optText, optRec)
+
+        col1Text = font.render("Pulsa \'c\' para cambiar el color del tema", True, color1[colorInd1])
+        col1Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        window.blit(col1Text, col1Rec)
+
+        col2Text = font.render("Tema actual:  " + str(theme[colorInd1] + " "), True, color1[colorInd1])
+        col2Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        window.blit(col2Text, col2Rec)
+
+
         pygame.display.update()
 
 def credits():
@@ -117,25 +149,25 @@ def credits():
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
 
-        window.fill(BLACK)
+        window.fill(color2[colorInd2])
 
-        creTitle = font.render("- Créditos -" , True, WHITE)
+        creTitle = font.render("- Créditos -" , True, color1[colorInd1])
         optRec = creTitle.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(creTitle, optRec)
 
-        crePong = font.render("Pong - (M)ateo" , True, WHITE)
-        pongRec = crePong.get_rect(center=(WINDOW_WIDTH // 2, 100))
-        window.blit(crePong, pongRec)
-
-        creSpa = font.render("Space Invader - (Y)oel" , True, WHITE)
+        creArt = font.render("Arte - (H)ugo" , True, color1[colorInd1])
+        artRec = creArt.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        window.blit(creArt, artRec)
+        
+        creSpa = font.render("Space Invader - (Y)oel" , True, color1[colorInd1])
         spaRec = creSpa.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(creSpa, spaRec)
 
-        creArt = font.render("Arte - (h)ugo" , True, WHITE)
-        artRec = creArt.get_rect(center=(WINDOW_WIDTH // 2, 150))
-        window.blit(creArt, artRec)
+        crePong = font.render("Pong - (M)ateo" , True, color1[colorInd1])
+        pongRec = crePong.get_rect(center=(WINDOW_WIDTH // 2, 150))
+        window.blit(crePong, pongRec)
 
-        creMen = font.render("Menú - (F)ernando" , True, WHITE)
+        creMen = font.render("Menú - (F)ernando" , True, color1[colorInd1])
         menRec = creMen.get_rect(center=(WINDOW_WIDTH // 2, 175))
         window.blit(creMen, menRec)
 

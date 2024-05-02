@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 # Define constants
 SCREEN_WIDTH = 300
@@ -84,7 +85,8 @@ class Tetris:
             for col in range(len(self.current_shape[0])):
                 if self.current_shape[row][col]:
                     self.board[self.current_shape_row + row][self.current_shape_col + col] = 1
-        self.check_lines()
+        lines_cleared = self.check_lines()
+        self.score += lines_cleared * 100
         self.generate_shape()
         if self.check_collision():
             self.game_over = True
@@ -95,7 +97,7 @@ class Tetris:
         for row in completed_lines:
             del self.board[row]
             self.board.insert(0, [0] * COLS)
-        self.score += len(completed_lines)
+        return len(completed_lines)
 
     # Function to draw the game
     def draw(self):
@@ -108,10 +110,14 @@ class Tetris:
             for col in range(len(self.current_shape[0])):
                 if self.current_shape[row][col]:
                     pygame.draw.rect(self.screen, GRAY, ((self.current_shape_col + col) * BLOCK_SIZE, (self.current_shape_row + row) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+        font = pygame.font.SysFont(None, 30)
+        text = font.render("Score: " + str(self.score), True, WHITE)
+        self.screen.blit(text, (10, 10))
         pygame.display.update()
 
     # Function to run the game loop
     def run(self):
+        self.countdown()
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -131,6 +137,19 @@ class Tetris:
             self.clock.tick(5)
 
         pygame.quit()
+
+    # Function for countdown before the game starts
+    def countdown(self):
+        for i in range(3, 0, -1):
+            self.screen.fill(BLACK)
+            font = pygame.font.SysFont(None, 100)
+            text = font.render(str(i), True, WHITE)
+            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            self.screen.blit(text, text_rect)
+            pygame.display.flip()
+            pygame.time.wait(1000)
+            self.screen.fill(BLACK)
+            pygame.display.flip()
 
 # Main function to start the game
 def main():

@@ -17,6 +17,7 @@ BLACK = (0, 0, 0)
 BALL_RADIUS = 10
 ball_pos = [WIDTH // 2, HEIGHT // 2]
 ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
+ball_served = False
 
 # Variables de las paletas
 PAD_WIDTH = 10
@@ -55,9 +56,17 @@ def draw_score():
     score_rect = score_text.get_rect(center=(WIDTH // 2, 50))
     WIN.blit(score_text, score_rect)
 
+# Función para mostrar mensaje de ganador
+def display_winner(winner):
+    winner_text = font.render(f"¡{winner} ha ganado!", True, WHITE)
+    winner_rect = winner_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    WIN.blit(winner_text, winner_rect)
+    pygame.display.update()
+    pygame.time.wait(2000)  # Esperar 2 segundos antes de salir del juego
+
 # Función principal del juego
 def main():
-    global ball_pos, ball_vel, score_team1, score_team2
+    global ball_pos, ball_vel, ball_served, score_team1, score_team2
     clock = pygame.time.Clock()
 
     # Bucle del juego
@@ -67,6 +76,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    ball_served = True
 
         # Movimiento de las paletas del equipo 1
         keys = pygame.key.get_pressed()
@@ -89,34 +101,45 @@ def main():
         if keys[pygame.K_l] and TEAM2_RIGHT_PAD_POS[1] < HEIGHT - PAD_HEIGHT:
             TEAM2_RIGHT_PAD_POS[1] += PAD_SPEED
 
-        # Movimiento de la pelota
-        ball_pos[0] += ball_vel[0]
-        ball_pos[1] += ball_vel[1]
+        # Iniciar el movimiento de la pelota cuando se presiona Enter
+        if ball_served:
+            ball_pos[0] += ball_vel[0]
+            ball_pos[1] += ball_vel[1]
 
-        # Rebotar en la parte superior e inferior de la pantalla
-        if ball_pos[1] <= BALL_RADIUS or ball_pos[1] >= HEIGHT - BALL_RADIUS:
-            ball_vel[1] = -ball_vel[1]
+            # Rebotar en la parte superior e inferior de la pantalla
+            if ball_pos[1] <= BALL_RADIUS or ball_pos[1] >= HEIGHT - BALL_RADIUS:
+                ball_vel[1] = -ball_vel[1]
 
-        # Rebotar en las paletas del equipo 1
-        if ball_pos[0] <= PAD_WIDTH + BALL_RADIUS:
-            if ball_pos[1] >= TEAM1_LEFT_PAD_POS[1] and ball_pos[1] <= TEAM1_LEFT_PAD_POS[1] + PAD_HEIGHT:
-                ball_vel[0] = -ball_vel[0]
-            elif ball_pos[1] >= TEAM1_RIGHT_PAD_POS[1] and ball_pos[1] <= TEAM1_RIGHT_PAD_POS[1] + PAD_HEIGHT:
-                ball_vel[0] = -ball_vel[0]
-            else:
-                score_team2 += 1
-                ball_pos = [WIDTH // 2, HEIGHT // 2]
-                ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
-        # Rebotar en las paletas del equipo 2
-        elif ball_pos[0] >= WIDTH - PAD_WIDTH - BALL_RADIUS:
-            if ball_pos[1] >= TEAM2_LEFT_PAD_POS[1] and ball_pos[1] <= TEAM2_LEFT_PAD_POS[1] + PAD_HEIGHT:
-                ball_vel[0] = -ball_vel[0]
-            elif ball_pos[1] >= TEAM2_RIGHT_PAD_POS[1] and ball_pos[1] <= TEAM2_RIGHT_PAD_POS[1] + PAD_HEIGHT:
-                ball_vel[0] = -ball_vel[0]
-            else:
-                score_team1 += 1
-                ball_pos = [WIDTH // 2, HEIGHT // 2]
-                ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
+            # Rebotar en las paletas del equipo 1
+            if ball_pos[0] <= PAD_WIDTH + BALL_RADIUS:
+                if ball_pos[1] >= TEAM1_LEFT_PAD_POS[1] and ball_pos[1] <= TEAM1_LEFT_PAD_POS[1] + PAD_HEIGHT:
+                    ball_vel[0] = -ball_vel[0]
+                elif ball_pos[1] >= TEAM1_RIGHT_PAD_POS[1] and ball_pos[1] <= TEAM1_RIGHT_PAD_POS[1] + PAD_HEIGHT:
+                    ball_vel[0] = -ball_vel[0]
+                else:
+                    score_team2 += 1
+                    ball_served = False
+                    ball_pos = [WIDTH // 2, HEIGHT // 2]
+                    ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
+            # Rebotar en las paletas del equipo 2
+            elif ball_pos[0] >= WIDTH - PAD_WIDTH - BALL_RADIUS:
+                if ball_pos[1] >= TEAM2_LEFT_PAD_POS[1] and ball_pos[1] <= TEAM2_LEFT_PAD_POS[1] + PAD_HEIGHT:
+                    ball_vel[0] = -ball_vel[0]
+                elif ball_pos[1] >= TEAM2_RIGHT_PAD_POS[1] and ball_pos[1] <= TEAM2_RIGHT_PAD_POS[1] + PAD_HEIGHT:
+                    ball_vel[0] = -ball_vel[0]
+                else:
+                    score_team1 += 1
+                    ball_served = False
+                    ball_pos = [WIDTH // 2, HEIGHT // 2]
+                    ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
+
+            # Verificar si un equipo ha ganado
+            if score_team1 >= 10:
+                display_winner(f"{team1_player1_name} & {team1_player2_name}")
+                break
+            elif score_team2 >= 10:
+                display_winner(f"{team2_player1_name} & {team2_player2_name}")
+                break
 
         # Limpiar la pantalla
         WIN.fill(BLACK)
@@ -125,18 +148,6 @@ def main():
         draw_ball(ball_pos)
         draw_paddles()
         draw_score()
-
-        # Verificar si un equipo ha ganado
-        if score_team1 >= 10 or score_team2 >= 10:
-            if score_team1 > score_team2:
-                winner_text = font.render(f"{team1_player1_name} & {team1_player2_name} han ganado!", True, WHITE)
-            else:
-                winner_text = font.render(f"{team2_player1_name} & {team2_player2_name} han ganado!", True, WHITE)
-            winner_rect = winner_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-            WIN.blit(winner_text, winner_rect)
-            pygame.display.update()
-            pygame.time.wait(3000)  # Esperar 3 segundos antes de salir del juego
-            break
 
         # Actualizar la pantalla
         pygame.display.update()

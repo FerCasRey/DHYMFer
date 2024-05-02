@@ -56,7 +56,37 @@ def show_menu():
     option5_text = font.render("5. Cerrar", True, color1[colorInd1])
     window.blit(option5_text, (50, 300))
 
-def option1():
+def pong():
+    pygame.display.set_caption("Pong - Selector de modo")
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
+                    running = False
+                if event.key == pygame.K_1: # one player
+                    print("Ejecutando Pong (1 vs 1)")
+                    from subprocess import call
+                    call(['python', 'ping_pong_1vs1.py'])
+                if event.key == pygame.K_2: # two players
+                    print("Ejecutando Pong (2 vs 2)")
+                    call(['python', 'ping_pong_2vs2.py'])
+
+        window.fill(color2[colorInd2])
+
+        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd1])
+        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        window.blit(pong1, pong1Rec)
+
+        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd1])
+        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        window.blit(pong2, pong2Rec)
+
+
+        pygame.display.update()
     print("Ejecutando Pong")
     from subprocess import call
     call(['python', 'Pong_juego.py'])
@@ -86,7 +116,7 @@ def main():
                 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    option1()
+                    pong()
                     pygame.quit()
                     sys.exit()
                 elif event.key == pygame.K_2:

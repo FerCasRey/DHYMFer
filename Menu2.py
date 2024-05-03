@@ -71,25 +71,26 @@ def pong():
                     print("Ejecutando Pong (1 vs 1)")
                     from subprocess import call
                     call(['python', 'ping_pong_1vs1.py'])
+                    pygame.quit()
+                    sys.exit()
                 if event.key == pygame.K_2: # two players
                     print("Ejecutando Pong (2 vs 2)")
                     call(['python', 'ping_pong_2vs2.py'])
+                    pygame.quit()
+                    sys.exit()
 
         window.fill(color2[colorInd2])
 
         pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd1])
-        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(pong1, pong1Rec)
 
         pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd1])
-        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 175))
         window.blit(pong2, pong2Rec)
 
 
         pygame.display.update()
-    print("Ejecutando Pong")
-    from subprocess import call
-    call(['python', 'Pong_juego.py'])
 
     # Add your code for Option 1 here
 
@@ -117,8 +118,6 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     pong()
-                    pygame.quit()
-                    sys.exit()
                 elif event.key == pygame.K_2:
                     option2()
                     pygame.quit()
@@ -148,8 +147,6 @@ def config():
                     running = False
                 if event.key == pygame.K_c:
                     changeColor()
-
-
 
         window.fill(color2[colorInd2])
         optText = font.render("- Configuración - ", True, color1[colorInd1])
@@ -185,20 +182,24 @@ def credits():
         optRec = creTitle.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(creTitle, optRec)
 
+        crePong = font.render("Pong - (D)iego" , True, color1[colorInd1])
+        pongRec = crePong.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        window.blit(crePong, pongRec)
+
         creArt = font.render("Arte - (H)ugo" , True, color1[colorInd1])
-        artRec = creArt.get_rect(center=(WINDOW_WIDTH // 2, 100))
+        artRec = creArt.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(creArt, artRec)
         
         creSpa = font.render("Space Invader - (Y)oel" , True, color1[colorInd1])
-        spaRec = creSpa.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        spaRec = creSpa.get_rect(center=(WINDOW_WIDTH // 2, 150))
         window.blit(creSpa, spaRec)
 
-        crePong = font.render("Pong - (M)ateo" , True, color1[colorInd1])
-        pongRec = crePong.get_rect(center=(WINDOW_WIDTH // 2, 150))
-        window.blit(crePong, pongRec)
+        creTet = font.render("Tetris - (M)ateo" , True, color1[colorInd1])
+        tetRec = creTet.get_rect(center=(WINDOW_WIDTH // 2, 175))
+        window.blit(creTet, tetRec)
 
         creMen = font.render("Menú - (F)ernando" , True, color1[colorInd1])
-        menRec = creMen.get_rect(center=(WINDOW_WIDTH // 2, 175))
+        menRec = creMen.get_rect(center=(WINDOW_WIDTH // 2, 200))
         window.blit(creMen, menRec)
 
 

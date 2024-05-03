@@ -6,13 +6,18 @@ import random
 pygame.init()
 ancho, alto = 800, 600
 pantalla = pygame.display.set_mode((ancho, alto))
+fuente = pygame.font.Font(None, 36)  # Fuente para mostrar el texto
 
 class Jugador(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('C:/Users/Admin/Downloads/Galaxian.png')  # Carga la imagen
+        self.image = pygame.image.load('C:/Users/noemi/Galaxian64.png')  # Carga la imagen
         self.image = pygame.transform.scale(self.image, (50, 50))  # Ajusta el tamaño de la imagen
         self.rect = self.image.get_rect(center=(ancho / 2, alto - 50))
+        self.vidas = 3
+
+    def update(self):
+        keys = pygame.key.get
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -27,68 +32,75 @@ class Jugador(pygame.sprite.Sprite):
             self.rect.right = ancho
 
 class Enemigo(pygame.sprite.Sprite):
-    def __init__(self, x, y, imagenes_enemigos):
+    def __init__(self, x, y, ruta_imagen):
         super().__init__()
-        imagenes_enemigos = ['C:/Users/Admin/Downloads/Enemy.png', 'C:/Users/Admin/Downloads/Enemy2.png', 'C:/Users/Admin/Downloads/Ufo.png', 'C:/Users/Admin/Downloads/Enemy.png']
-        imagenes_enemigos = pygame.transform.scale(self.image, (50, 50))
+        self.image = pygame.image.load(ruta_imagen)  # Carga la imagen
+        self.image = pygame.transform.scale(self.image, (50, 50))  # Ajusta el tamaño de la imagen
         self.rect = self.image.get_rect(center=(x, y))
+        self.direccion = 1
+        self.tiempo_ultimo_cambio = pygame.time.get_ticks()
 
     def update(self):
-        self.rect.move_ip(0, 1)
-        if self.rect.top > alto:
-            self.rect.bottom = 0
+        self.rect.move_ip(self.direccion, 0)
+        if self.rect.left < 0 or self.rect.right > ancho:
+            self.direccion *= -1  # Cambia de dirección
+            if pygame.time.get_ticks() - self.tiempo_ultimo_cambio > 20000:  # Han pasado 20 segundos
+                self.rect.move_ip(0, self.image.get_height())  # Baja una fila
+                self.tiempo_ultimo_cambio = pygame.time.get_ticks()
 
 class Proyectil(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, velocidad):
         super().__init__()
         self.image = pygame.Surface((10, 20))
         self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect(center=(x, y))
+        self.velocidad = velocidad
 
     def update(self):
-        self.rect.move_ip(0, -5)
-        if self.rect.bottom < 0:
+        self.rect.move_ip(0, self.velocidad)
+        if self.rect.bottom < 0 or self.rect.top > alto:
             self.kill()
 
 jugador = Jugador()
 enemigos = pygame.sprite.Group()
 proyectiles = pygame.sprite.Group()
 todos = pygame.sprite.Group(jugador)
-imagenes_enemigos = ['C:/Users/Admin/Downloads/Enemy.png', 'C:/Users/Admin/Downloads/Enemy2.png', 'C:/Users/Admin/Downloads/Ufo.png', 'C:/Users/Admin/Downloads/Enemy.png']
-
-
+imagenes_enemigos = ['C:/Users/noemi/Desktop/Enemy(Porpol).png', 'C:/Users/noemi/Desktop/Enemy2.png', 'C:/Users/noemi/Desktop/Ufo.png', 'C:/Users/noemi/Desktop/Enemy(Porpol).png']
 
 # Crear enemigos
 for fila in range(4):
     for columna in range(10):
         x = 50 + columna * 70
         y = 50 + fila * 70
-        imagen = imagenes_enemigos[fila]  # Selecciona la imagen correspondiente a la fila
+        if fila < 2:  # Las primeras dos filas tienen el mismo tipo de enemigos
+            imagen = imagenes_enemigos[0]
+        else:  # Las últimas dos filas tienen otro tipo de enemigos
+            imagen = imagenes_enemigos[1]
         enemigo = Enemigo(x, y, imagen)
         enemigos.add(enemigo)
         todos.add(enemigo)
 
-
-
 # Bucle principal del juego
-while True:
+corriendo = True
+tiempo_ultimo_disparo = pygame.time.get_ticks()
+while corriendo:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
-            proyectil = Proyectil(*jugador.rect.center)
+            proyectil = Proyectil(*jugador.rect.center, -5)
             proyectiles.add(proyectil)
             todos.add(proyectil)
 
-    # Los enemigos de la última fila disparan aleatoriamente
-    enemigos_candidatos = [e for e in enemigos if e.rect.y > alto - 100]
-    if enemigos_candidatos:  # La lista no está vacía
-        disparador = random.choice(enemigos_candidatos)
+    # Los enemigos disparan aleatoriamente
+    if pygame.time.get_ticks() - tiempo_ultimo_disparo > 2000:  # Han pasado 2 segundos desde el último disparo
+        disparador = random.choice(enemigos.sprites())
         if disparador:
-            proyectil = Proyectil(*disparador.rect.center)
+            proyectil = Proyectil(*disparador.rect.center, 5)
             proyectiles.add(proyectil)
             todos.add(proyectil)
+            tiempo_ultimo_disparo = pygame.time.get_ticks()
 
     todos.update()
 
@@ -98,9 +110,36 @@ while True:
             proyectil.kill()
             todos.remove(enemigo)
 
+    # Comprobar si algún proyectil ha alcanzado al jugador
+    if pygame.sprite.spritecollide(jugador, proyectiles, True):
+        jugador.vidas -= 1  # El jugador pierde una vida
+        if jugador.vidas == 0:  # Si el jugador no tiene vidas, termina el juego
+            texto = fuente.render("Has perdido", True, (255, 255, 255))
+            pantalla.blit(texto, (ancho / 2 - texto.get_width() / 2, alto / 2 - texto.get_height() / 2))
+            pygame.display.flip()
+            pygame.time.wait(3000)
+            pygame.quit()
+            sys.exit()
+
+    # Comprobar si algún enemigo ha alcanzado al jugador
+    if pygame.sprite.spritecollide(jugador, enemigos, False):
+        jugador.vidas -= 1  # El jugador pierde una vida
+        if jugador.vidas == 0:  # Si el jugador no tiene vidas, termina el juego
+            texto = fuente.render("Has perdido", True, (255, 255, 255))
+            pantalla.blit(texto, (ancho / 2 - texto.get_width() / 2, alto / 2 - texto.get_height() / 2))
+            pygame.display.flip()
+            pygame.time.wait(3000)
+            pygame.quit()
+            sys.exit()
+
     pantalla.fill((0, 0, 0))
     todos.draw(pantalla)
 
+    # Dibujar el contador de vidas
+    texto_vidas = fuente.render(f"Vidas: {jugador.vidas}", True, (255, 255, 255))
+    pantalla.blit(texto_vidas, (ancho - texto_vidas.get_width() - 10, 10))
+
     pygame.display.flip()
     pygame.time.delay(10)
+
 

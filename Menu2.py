@@ -15,48 +15,42 @@ pygame.display.set_caption('Lanzador de DHYMFer')
 font = pygame.font.Font(None, 30)
 
 # Colors
-global colorInd1
-colorInd1 = 0
-global colorInd2
-colorInd2 = 0
+global colorInd
+colorInd = 0
 
 color1 = [(255, 255, 255), (0,0,0), (0,40,255), (255,0,0), (0,255,0), (51,88,34)]
 color2 = [(0, 0, 0), (255,255,255), (0,0,0), (0,0,0), (0,0,0), (181,165,86)]
 theme = ['Noche', 'Día', 'Aqua', 'Igni', 'Matcha', 'GBoy']
-colorInd1Len = len(color1) - 1
-colorInd2Len = len(color2) - 1
+colorIndLen = len(color1) - 1
 
 def changeColor():
-    global colorInd1
-    global colorInd2
-    if colorInd1 < colorInd1Len: 
-        colorInd1 += 1
-        colorInd2 += 1 
+    global colorInd
+    if colorInd < colorIndLen: 
+        colorInd += 1        
     else:
-        colorInd1 = 0
-        colorInd2 = 0
+        colorInd = 0  
 
 def show_menu():
-    window.fill(color2[colorInd2])
-    title_text = font.render("Bienvenido al lanzador de HYMFer", True, color1[colorInd1])
+    window.fill(color2[colorInd])
+    title_text = font.render("Bienvenido al lanzador de HYMFer", True, color1[colorInd])
     window.blit(title_text, (50, 50))
 
-    option1_text = font.render("1. Ejecutar Pong", True, color1[colorInd1])
+    option1_text = font.render("1. Ejecutar Pong", True, color1[colorInd])
     window.blit(option1_text, (50, 100))
 
-    option2_text = font.render("2. Ejecutar Space Invaders", True, color1[colorInd1])
+    option2_text = font.render("2. Ejecutar Space Invaders", True, color1[colorInd])
     window.blit(option2_text, (50, 150))
 
-    option3_text = font.render("3. Ejecutar Tetris", True, color1[colorInd1])
+    option3_text = font.render("3. Ejecutar Tetris", True, color1[colorInd])
     window.blit(option3_text, (50, 200))
 
-    option4_text = font.render("4. Configuración", True, color1[colorInd1])
+    option4_text = font.render("4. Configuración", True, color1[colorInd])
     window.blit(option4_text, (50, 250))
 
-    option5_text = font.render("5. Créditos y más", True, color1[colorInd1])
+    option5_text = font.render("5. Créditos y más", True, color1[colorInd])
     window.blit(option5_text, (50, 300))
 
-    option6_text = font.render("6. Cerrar", True, color1[colorInd1])
+    option6_text = font.render("6. Cerrar", True, color1[colorInd])
     window.blit(option6_text, (50, 350))
 
 def pong():
@@ -82,13 +76,13 @@ def pong():
                     pygame.quit()
                     sys.exit()
 
-        window.fill(color2[colorInd2])
+        window.fill(color2[colorInd])
 
-        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd1])
+        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
         pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(pong1, pong1Rec)
 
-        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd1])
+        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
         pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 175))
         window.blit(pong2, pong2Rec)
 
@@ -160,16 +154,16 @@ def config():
                 if event.key == pygame.K_c:
                     changeColor()
 
-        window.fill(color2[colorInd2])
-        optText = font.render("- Configuración - ", True, color1[colorInd1])
+        window.fill(color2[colorInd])
+        optText = font.render("- Configuración - ", True, color1[colorInd])
         optRec = optText.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(optText, optRec)
 
-        col1Text = font.render("Pulsa \'c\' para cambiar el color del tema", True, color1[colorInd1])
+        col1Text = font.render("Pulsa \'c\' para cambiar el color del tema", True, color1[colorInd])
         col1Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 100))
         window.blit(col1Text, col1Rec)
 
-        col2Text = font.render("Tema actual:  " + str(theme[colorInd1] + " "), True, color1[colorInd1])
+        col2Text = font.render("Tema actual:  " + str(theme[colorInd] + " "), True, color1[colorInd])
         col2Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(col2Text, col2Rec)
 
@@ -192,33 +186,33 @@ def credits():
                     webbrowser.open_new_tab(url)
 
 
-        window.fill(color2[colorInd2])
+        window.fill(color2[colorInd])
 
-        creTitle = font.render("- Créditos -" , True, color1[colorInd1])
+        creTitle = font.render("- Créditos -" , True, color1[colorInd])
         optRec = creTitle.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(creTitle, optRec)
 
-        crePong = font.render("Pong - (D)iego" , True, color1[colorInd1])
+        crePong = font.render("Pong - (D)iego" , True, color1[colorInd])
         pongRec = crePong.get_rect(center=(WINDOW_WIDTH // 2, 100))
         window.blit(crePong, pongRec)
 
-        creArt = font.render("Arte - (H)ugo" , True, color1[colorInd1])
+        creArt = font.render("Arte - (H)ugo" , True, color1[colorInd])
         artRec = creArt.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(creArt, artRec)
         
-        creSpa = font.render("Space Invader - (Y)oel" , True, color1[colorInd1])
+        creSpa = font.render("Space Invader - (Y)oel" , True, color1[colorInd])
         spaRec = creSpa.get_rect(center=(WINDOW_WIDTH // 2, 150))
         window.blit(creSpa, spaRec)
 
-        creTet = font.render("Tetris - (M)ateo" , True, color1[colorInd1])
+        creTet = font.render("Tetris - (M)ateo" , True, color1[colorInd])
         tetRec = creTet.get_rect(center=(WINDOW_WIDTH // 2, 175))
         window.blit(creTet, tetRec)
 
-        creMen = font.render("Menú - (F)ernando" , True, color1[colorInd1])
+        creMen = font.render("Menú - (F)ernando" , True, color1[colorInd])
         menRec = creMen.get_rect(center=(WINDOW_WIDTH // 2, 200))
         window.blit(creMen, menRec)
 
-        creGit = font.render('Pulsa \'B\' para reportar fallos', True, color1[colorInd1])
+        creGit = font.render('Pulsa \'B\' para reportar fallos', True, color1[colorInd])
         gitRec = creGit.get_rect(center=(WINDOW_WIDTH//2, 300))
         window.blit(creGit,gitRec)
 

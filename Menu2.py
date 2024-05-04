@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+import webbrowser
 
 # Initialize Pygame
 pygame.init()
@@ -9,7 +9,7 @@ pygame.init()
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 600
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Lanzador de HYMFer')
+pygame.display.set_caption('Lanzador de DHYMFer')
 
 # Set up fonts
 font = pygame.font.Font(None, 30)
@@ -47,14 +47,17 @@ def show_menu():
     option2_text = font.render("2. Ejecutar Space Invaders", True, color1[colorInd1])
     window.blit(option2_text, (50, 150))
 
-    option3_text = font.render("3. Configuración", True, color1[colorInd1])
+    option3_text = font.render("3. Ejecutar Tetris", True, color1[colorInd1])
     window.blit(option3_text, (50, 200))
 
-    option4_text = font.render("4. Créditos y más", True, color1[colorInd1])
+    option4_text = font.render("4. Configuración", True, color1[colorInd1])
     window.blit(option4_text, (50, 250))
 
-    option5_text = font.render("5. Cerrar", True, color1[colorInd1])
+    option5_text = font.render("5. Créditos y más", True, color1[colorInd1])
     window.blit(option5_text, (50, 300))
+
+    option6_text = font.render("6. Cerrar", True, color1[colorInd1])
+    window.blit(option6_text, (50, 350))
 
 def pong():
     pygame.display.set_caption("Pong - Selector de modo")
@@ -94,9 +97,18 @@ def pong():
 
     # Add your code for Option 1 here
 
-def option2():
+def space():
     print("Ejecutando Space Invaders")
+    from subprocess import call
+    call(['python', 'SpaceInvaders.py'])
+    pygame.quit()
+    sys.exit()
     # Add your code for Option 2 here
+
+def tetris():
+    print("Ejectando Tetris")
+    from subprocess import call
+    call(['python', 'Tetris.py'])
 
 def option3():
     print('Mostrando Configuración')
@@ -119,14 +131,14 @@ def main():
                 if event.key == pygame.K_1:
                     pong()
                 elif event.key == pygame.K_2:
-                    option2()
-                    pygame.quit()
-                    sys.exit()
+                    space()
                 elif event.key == pygame.K_3:
-                    option3()
+                    tetris()
                 elif event.key == pygame.K_4:
-                    option4()
-                elif event.key == (pygame.K_5) or event.key == (pygame.K_ESCAPE):
+                    config()
+                elif event.key == pygame.K_5:
+                    credits()
+                elif event.key == (pygame.K_6) or event.key == (pygame.K_ESCAPE):
                     print("Cerrando. Gracias por jugar.")
                     pygame.quit()
                     sys.exit()
@@ -175,6 +187,10 @@ def credits():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
+                if event.key == pygame.K_b:
+                    url = 'https://github.com/FerCasRey/DHYMFer/issues'
+                    webbrowser.open_new_tab(url)
+
 
         window.fill(color2[colorInd2])
 
@@ -201,6 +217,10 @@ def credits():
         creMen = font.render("Menú - (F)ernando" , True, color1[colorInd1])
         menRec = creMen.get_rect(center=(WINDOW_WIDTH // 2, 200))
         window.blit(creMen, menRec)
+
+        creGit = font.render('Pulsa \'B\' para reportar fallos', True, color1[colorInd1])
+        gitRec = creGit.get_rect(center=(WINDOW_WIDTH//2, 300))
+        window.blit(creGit,gitRec)
 
 
         pygame.display.update()

@@ -21,14 +21,6 @@ colorInd = 0
 color1 = [(255, 255, 255), (0,0,0), (0,40,255), (255,0,0), (0,255,0), (51,88,34)]
 color2 = [(0, 0, 0), (255,255,255), (0,0,0), (0,0,0), (0,0,0), (181,165,86)]
 theme = ['Noche', 'Día', 'Aqua', 'Igni', 'Matcha', 'GBoy']
-colorIndLen = len(color1) - 1
-
-def changeColor():
-    global colorInd
-    if colorInd < colorIndLen: 
-        colorInd += 1        
-    else:
-        colorInd = 0  
 
 def show_menu():
     window.fill(color2[colorInd])
@@ -151,21 +143,42 @@ def config():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
-                if event.key == pygame.K_c:
-                    changeColor()
+                if event.key == pygame.K_RIGHT:
+                    global colorInd
+                    global color1
+                    if colorInd == (len(color1) - 1):
+                        colorInd = 0
+                    else:
+                        colorInd += 1
+                if event.key ==  pygame.K_LEFT:
+                    if colorInd == 0:
+                        colorInd = len(color1)-1
+                    else:
+                        colorInd -= 1
+
+
+
 
         window.fill(color2[colorInd])
         optText = font.render("- Configuración - ", True, color1[colorInd])
         optRec = optText.get_rect(center=(WINDOW_WIDTH // 2, 50))
         window.blit(optText, optRec)
 
-        col1Text = font.render("Pulsa \'c\' para cambiar el color del tema", True, color1[colorInd])
+        col1Text = font.render("Cambiar el tema", True, color1[colorInd])
         col1Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 100))
         window.blit(col1Text, col1Rec)
 
-        col2Text = font.render("Tema actual:  " + str(theme[colorInd] + " "), True, color1[colorInd])
-        col2Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        colRArrow = font.render("<--", True, color1[colorInd])
+        colRArrowRec = colRArrow.get_rect(center=(WINDOW_WIDTH // 2  - 70, 125))
+        window.blit(colRArrow, colRArrowRec)
+
+        col2Text = font.render(''+str(theme[colorInd]), True, color1[colorInd])
+        col2Rec = col1Text.get_rect(center=(WINDOW_WIDTH // 2 + 45, 125))
         window.blit(col2Text, col2Rec)
+
+        colLArrow = font.render("-->", True, color1[colorInd])
+        colLArrowRec = colLArrow.get_rect(center=(WINDOW_WIDTH // 2  + 70, 125))
+        window.blit(colLArrow, colLArrowRec)
 
 
         pygame.display.update()

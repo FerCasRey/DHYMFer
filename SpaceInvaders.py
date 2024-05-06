@@ -11,7 +11,7 @@ fuente = pygame.font.Font(None, 36)  # Fuente para mostrar el texto
 class Jugador(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('C:/Users/noemi/Galaxian64.png')  # Carga la imagen
+        self.image = pygame.image.load('C:/Users/Admin/Downloads/Galaxian64.png')  # Carga la imagen
         self.image = pygame.transform.scale(self.image, (50, 50))  # Ajusta el tamaño de la imagen
         self.rect = self.image.get_rect(center=(ancho / 2, alto - 50))
         self.vidas = 3
@@ -65,7 +65,7 @@ jugador = Jugador()
 enemigos = pygame.sprite.Group()
 proyectiles = pygame.sprite.Group()
 todos = pygame.sprite.Group(jugador)
-imagenes_enemigos = ['C:/Users/noemi/Desktop/Enemy(Porpol).png', 'C:/Users/noemi/Desktop/Enemy2.png', 'C:/Users/noemi/Desktop/Ufo.png', 'C:/Users/noemi/Desktop/Enemy(Porpol).png']
+imagenes_enemigos = ['C:/Users/Admin/Downloads/Enemy(Porpol).png', 'C:/Users/Admin/Downloads/Enemy2.png', 'C:/Users/Admin/Downloads/Ufo.png', 'C:/Users/Admin/Downloads/Enemy(Porpol).png']
 
 # Crear enemigos
 for fila in range(4):

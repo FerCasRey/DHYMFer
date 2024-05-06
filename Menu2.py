@@ -45,44 +45,6 @@ def show_menu():
     option6_text = font.render("6. Cerrar", True, color1[colorInd])
     window.blit(option6_text, (50, 350))
 
-def pong():
-    pygame.display.set_caption("Pong - Selector de modo")
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
-                    running = False
-                if event.key == pygame.K_1: # one player
-                    print("Ejecutando Pong (1 vs 1)")
-                    from subprocess import call
-                    call(['python', 'ping_pong_1vs1.py'])
-                    pygame.quit()
-                    sys.exit()
-                if event.key == pygame.K_2: # two players
-                    print("Ejecutando Pong (2 vs 2)")
-                    call(['python', 'ping_pong_2vs2.py'])
-                    pygame.quit()
-                    sys.exit()
-
-        window.fill(color2[colorInd])
-
-        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
-        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
-        window.blit(pong1, pong1Rec)
-
-        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
-        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 175))
-        window.blit(pong2, pong2Rec)
-
-
-        pygame.display.update()
-
-    # Add your code for Option 1 here
-
 def space():
     print("Ejecutando Space Invaders")
     from subprocess import call
@@ -131,6 +93,45 @@ def main():
 
         show_menu()
         pygame.display.update()
+
+def pong():
+    pygame.display.set_caption("Pong - Selector de modo")
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
+                    running = False
+                if event.key == pygame.K_1: # one player
+                    print("Ejecutando Pong (1 vs 1)")
+                    from subprocess import call
+                    call(['python', 'ping_pong_1vs1.py'])
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_2: # two players
+                    print("Ejecutando Pong (2 vs 2)")
+                    call(['python', 'ping_pong_2vs2.py'])
+                    pygame.quit()
+                    sys.exit()
+
+        window.fill(color2[colorInd])
+
+        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
+        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        window.blit(pong1, pong1Rec)
+
+        pong1Rul = font.render("Jugador 1: W - subir. S - bajar.\nJugador 2: ")
+
+        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
+        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 375))
+        window.blit(pong2, pong2Rec)
+
+
+        pygame.display.update()
+
 
 def config():
     pygame.display.set_caption("Configuración")
@@ -194,7 +195,7 @@ def credits():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
-                if event.key == pygame.K_b:
+                if event.key == pygame.K_b: # Open Issues from GitHub repo
                     url = 'https://github.com/FerCasRey/DHYMFer/issues'
                     webbrowser.open_new_tab(url)
 

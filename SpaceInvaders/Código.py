@@ -11,13 +11,12 @@ fuente = pygame.font.Font(None, 36)  # Fuente para mostrar el texto
 class Jugador(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('C:/Users/Admin/Downloads/Galaxian64.png')  # Carga la imagen
+        self.image = pygame.image.load('C:/Users/Admin/Downloads/Img/Galaxian64.png')  # Carga la imagen
         self.image = pygame.transform.scale(self.image, (50, 50))  # Ajusta el tamaño de la imagen
         self.rect = self.image.get_rect(center=(ancho / 2, alto - 50))
         self.vidas = 3
 
-    def update(self):
-        keys = pygame.key.get
+
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -52,8 +51,8 @@ class Proyectil(pygame.sprite.Sprite):
     def __init__(self, x, y, velocidad):
         super().__init__()
         self.image = pygame.Surface((10, 20))
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect(center=(x, y))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(center=(x, y-100))
         self.velocidad = velocidad
 
     def update(self):
@@ -65,7 +64,7 @@ jugador = Jugador()
 enemigos = pygame.sprite.Group()
 proyectiles = pygame.sprite.Group()
 todos = pygame.sprite.Group(jugador)
-imagenes_enemigos = ['C:/Users/Admin/Downloads/Enemy(Porpol).png', 'C:/Users/Admin/Downloads/Enemy2.png', 'C:/Users/Admin/Downloads/Ufo.png', 'C:/Users/Admin/Downloads/Enemy(Porpol).png']
+imagenes_enemigos = ['C:/Users/Admin/Downloads/Img/Enemy(Porpol).png', 'C:/Users/Admin/Downloads/Img/Enemy2.png', 'C:/Users/Admin/Downloads/Img/Ufo.png', 'C:/Users/Admin/Downloads/Img/Enemy(Porpol).png']
 
 # Crear enemigos
 for fila in range(4):
@@ -141,5 +140,8 @@ while corriendo:
 
     pygame.display.flip()
     pygame.time.delay(10)
+
+
+
 
 

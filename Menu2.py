@@ -22,6 +22,28 @@ color1 = [(255, 255, 255), (0,0,0), (0,40,255), (255,0,0), (0,255,0), (51,88,34)
 color2 = [(0, 0, 0), (255,255,255), (0,0,0), (0,0,0), (0,0,0), (181,165,86)]
 theme = ['Noche', 'Día', 'Aqua', 'Igni', 'Matcha', 'GBoy']
 
+# Render Text
+def blit_text(surface, text, pos, font, color):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+
+
+
+
+
 def show_menu():
     window.fill(color2[colorInd])
     title_text = font.render("Bienvenido al lanzador de HYMFer", True, color1[colorInd])
@@ -123,7 +145,16 @@ def pong():
         pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
         window.blit(pong1, pong1Rec)
 
-        pong1Rul = font.render("Jugador 1: W - subir. S - bajar.\nJugador 2: ")
+        pong1Rul = " \
+                    Golpea la pelota con tu pala para proteger tu portería e intentar marcar en la portería del contrario.\n \
+                    Jugador 1 -> W (subir) / S (bajar)\n \
+                    Jugador 2 -> Flecha Arriba (subir) / Flecha abajo (bajar)\
+                    "
+
+        blit_text(window, pong1Rul, (10, 150), font, color1[colorInd])
+        #pong1Rul = font.render("Jugador 1: W - subir. S - bajar." + "\n" + "Jugador 2: Flecha arriba - subir. Flecha abajo - bajar.", True, color1[colorInd])
+        #pong1RulRec = pong1Rul.get_rect(center=(WINDOW_WIDTH // 2, 150))
+        #window.blit(pong1Rul, pong1RulRec)
 
         pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
         pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 375))

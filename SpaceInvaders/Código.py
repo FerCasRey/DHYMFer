@@ -43,16 +43,28 @@ class Enemigo(pygame.sprite.Sprite):
         self.rect.move_ip(self.direccion, 0)
         if self.rect.left < 0 or self.rect.right > ancho:
             self.direccion *= -1  # Cambia de dirección
-            if pygame.time.get_ticks() - self.tiempo_ultimo_cambio > 20000:  # Han pasado 20 segundos
+            if pygame.time.get_ticks() - self.tiempo_ultimo_cambio > 10000:  # Han pasado 10 segundos
                 self.rect.move_ip(0, self.image.get_height())  # Baja una fila
                 self.tiempo_ultimo_cambio = pygame.time.get_ticks()
 
-class Proyectil(pygame.sprite.Sprite):
+class Proyectil_1(pygame.sprite.Sprite):
+    def __init__(self, x, y, velocidad):
+        super().__init__()
+        self.image = pygame.Surface((10, 20))
+        self.image.fill((0, 255, 0))
+        self.rect = self.image.get_rect(center=(x, y-50))
+        self.velocidad = velocidad
+
+    def update(self):
+        self.rect.move_ip(0, self.velocidad)
+        if self.rect.bottom < 0 or self.rect.top > alto:
+            self.kill()
+class Proyectil_2(pygame.sprite.Sprite):
     def __init__(self, x, y, velocidad):
         super().__init__()
         self.image = pygame.Surface((10, 20))
         self.image.fill((255, 0, 0))
-        self.rect = self.image.get_rect(center=(x, y-100))
+        self.rect = self.image.get_rect(center=(x, y-50))
         self.velocidad = velocidad
 
     def update(self):
@@ -62,7 +74,8 @@ class Proyectil(pygame.sprite.Sprite):
 
 jugador = Jugador()
 enemigos = pygame.sprite.Group()
-proyectiles = pygame.sprite.Group()
+proyectiles_1 = pygame.sprite.Group()
+proyectiles_2 = pygame.sprite.Group()
 todos = pygame.sprite.Group(jugador)
 imagenes_enemigos = ['C:/Users/Admin/Downloads/Img/Enemy(Porpol).png', 'C:/Users/Admin/Downloads/Img/Enemy2.png', 'C:/Users/Admin/Downloads/Img/Ufo.png', 'C:/Users/Admin/Downloads/Img/Enemy(Porpol).png']
 
@@ -88,29 +101,30 @@ while corriendo:
             pygame.quit()
             sys.exit()
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
-            proyectil = Proyectil(*jugador.rect.center, -5)
-            proyectiles.add(proyectil)
+            proyectil = Proyectil_1(*jugador.rect.center, -5)
+            proyectiles_1.add(proyectil)
             todos.add(proyectil)
 
     # Los enemigos disparan aleatoriamente
     if pygame.time.get_ticks() - tiempo_ultimo_disparo > 2000:  # Han pasado 2 segundos desde el último disparo
         disparador = random.choice(enemigos.sprites())
         if disparador:
-            proyectil = Proyectil(*disparador.rect.center, 5)
-            proyectiles.add(proyectil)
+            proyectil = Proyectil_2(*disparador.rect.center, 5)
+            proyectiles_2.add(proyectil)
             todos.add(proyectil)
             tiempo_ultimo_disparo = pygame.time.get_ticks()
 
     todos.update()
-
-    for proyectil in proyectiles:
+    
+    for proyectil in proyectiles_1:
+        
         enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos, True)
         for enemigo in enemigos_alcanzados:
             proyectil.kill()
             todos.remove(enemigo)
 
     # Comprobar si algún proyectil ha alcanzado al jugador
-    if pygame.sprite.spritecollide(jugador, proyectiles, True):
+    if pygame.sprite.spritecollide(jugador, proyectiles_2, True):
         jugador.vidas -= 1  # El jugador pierde una vida
         if jugador.vidas == 0:  # Si el jugador no tiene vidas, termina el juego
             texto = fuente.render("Has perdido", True, (255, 255, 255))
@@ -140,8 +154,5 @@ while corriendo:
 
     pygame.display.flip()
     pygame.time.delay(10)
-
-
-
 
 

@@ -30,23 +30,20 @@ def blit_text(surface, text, pos, font, color):
     x, y = pos
     for line in words:
         for word in line:
-            word_surface = font.render(word, 0, color)
+            word_surface = font.render(word, True, color)
             word_width, word_height = word_surface.get_size()
             if x + word_width >= max_width:
                 x = pos[0]  # Reset the x.
-                y += word_height  # Start on new row.
+                y += word_height + 2  # Start on new row.
             surface.blit(word_surface, (x, y))
             x += word_width + space
         x = pos[0]  # Reset the x.
         y += word_height  # Start on new row.
 
 
-
-
-
 def show_menu():
     window.fill(color2[colorInd])
-    title_text = font.render("Bienvenido al lanzador de HYMFer", True, color1[colorInd])
+    title_text = font.render("Bienvenido al lanzador de DHYMFer", True, color1[colorInd])
     window.blit(title_text, (50, 50))
 
     option1_text = font.render("1. Ejecutar Pong", True, color1[colorInd])
@@ -150,8 +147,7 @@ def pong():
                     Jugador 1 -> W (subir) / S (bajar)\n \
                     Jugador 2 -> Flecha Arriba (subir) / Flecha abajo (bajar)\
                     "
-
-        blit_text(window, pong1Rul, (10, 150), font, color1[colorInd])
+        blit_text(window, pong1Rul, (20, 150), font, color1[colorInd])
         #pong1Rul = font.render("Jugador 1: W - subir. S - bajar." + "\n" + "Jugador 2: Flecha arriba - subir. Flecha abajo - bajar.", True, color1[colorInd])
         #pong1RulRec = pong1Rul.get_rect(center=(WINDOW_WIDTH // 2, 150))
         #window.blit(pong1Rul, pong1RulRec)

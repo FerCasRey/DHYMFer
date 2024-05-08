@@ -159,6 +159,7 @@ class Tetris:
 
         self.player_name = self.get_player_name()
         self.save_score()
+        self.show_scores()  # Show scores after the game is over
         pygame.quit()
 
     # Function for countdown before the game starts
@@ -180,6 +181,36 @@ class Tetris:
         file_path = os.path.join(documents_path, "scores.txt")
         with open(file_path, "a") as file:
             file.write(f"{self.player_name}: {self.score}\n")
+
+    # Function to display scores in a pop-up
+    def show_scores(self):
+        pygame.init()
+        score_font = pygame.font.SysFont(None, 30)
+        scores = self.load_scores()
+        screen = pygame.display.set_mode((300, 300))
+        pygame.display.set_caption("Scores")
+        screen.fill(BLACK)
+        y = 30
+        for score in scores:
+            text = score_font.render(score, True, WHITE)
+            screen.blit(text, (10, y))
+            y += 30
+        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+
+    # Function to load scores from the file
+    def load_scores(self):
+        documents_path = os.path.join(os.path.expanduser("~"), "Documents")
+        file_path = os.path.join(documents_path, "scores.txt")
+        scores = []
+        if os.path.exists(file_path):
+            with open(file_path, "r") as file:
+                scores = file.readlines()
+        return scores
 
 # Main function to start the game
 def main():

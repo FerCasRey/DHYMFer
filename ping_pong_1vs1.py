@@ -1,5 +1,7 @@
+import os
 import pygame
 import random
+import time
 
 # Inicialización de Pygame
 pygame.init()
@@ -31,10 +33,6 @@ score_left = 0
 score_right = 0
 font = pygame.font.Font(None, 36)
 
-# Nombres de los jugadores
-player1_name = input("Ingrese el nombre del jugador 1: ")
-player2_name = input("Ingrese el nombre del jugador 2: ")
-
 # Función para dibujar la pelota
 def draw_ball(ball_pos):
     pygame.draw.circle(WIN, WHITE, ball_pos, BALL_RADIUS)
@@ -46,7 +44,7 @@ def draw_paddles(pad1_pos, pad2_pos):
 
 # Función para dibujar el marcador
 def draw_score():
-    score_text = font.render(f"{player1_name}: {score_left} - {player2_name}: {score_right}", True, WHITE)
+    score_text = font.render(f"{player1_name}: {score_left} - {score_right} :{player2_name}", True, WHITE)
     score_rect = score_text.get_rect(center=(WIDTH // 2, 50))
     WIN.blit(score_text, score_rect)
 
@@ -58,10 +56,54 @@ def display_winner(winner):
     pygame.display.update()
     pygame.time.wait(3000)  # Esperar 3 segundos antes de salir del juego
 
+# Función para obtener el nombre de los jugadores
+def get_player_names():
+    global player1_name, player2_name
+    player1_name = get_input("Ingrese el nombre del jugador 1: ")
+    player2_name = get_input("Ingrese el nombre del jugador 2: ")
+    countdown()
+
+# Función para obtener entrada del usuario dentro de la ventana del juego
+def get_input(prompt):
+    user_input = ""
+    input_active = True
+    while input_active:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    input_active = False
+                elif event.key == pygame.K_BACKSPACE:
+                    user_input = user_input[:-1]
+                else:
+                    user_input += event.unicode
+        draw_input_prompt(prompt + user_input)
+        pygame.display.update()
+    return user_input
+
+# Función para dibujar el prompt de entrada de usuario
+def draw_input_prompt(prompt):
+    WIN.fill(BLACK)
+    input_text = font.render(prompt, True, WHITE)
+    input_rect = input_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    WIN.blit(input_text, input_rect)
+
+# Función para la cuenta regresiva antes de que comience el juego
+def countdown():
+    for i in range(5, 0, -1):
+        WIN.fill(BLACK)
+        countdown_text = font.render(f"{i}", True, WHITE)
+        countdown_rect = countdown_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        WIN.blit(countdown_text, countdown_rect)
+        pygame.display.update()
+        pygame.time.wait(1000)
+
 # Función principal del juego
 def main():
     global ball_pos, ball_vel, ball_moving, score_left, score_right
     clock = pygame.time.Clock()
+
+    # Obtener los nombres de los jugadores
+    get_player_names()
 
     # Bucle del juego
     running = True

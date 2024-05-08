@@ -59,12 +59,13 @@ class Proyectil_1(pygame.sprite.Sprite):
         self.rect.move_ip(0, self.velocidad)
         if self.rect.bottom < 0 or self.rect.top > alto:
             self.kill()
+
 class Proyectil_2(pygame.sprite.Sprite):
     def __init__(self, x, y, velocidad):
         super().__init__()
         self.image = pygame.Surface((10, 20))
         self.image.fill((255, 0, 0))
-        self.rect = self.image.get_rect(center=(x, y-50))
+        self.rect = self.image.get_rect(center=(x, y-10))
         self.velocidad = velocidad
 
     def update(self):
@@ -74,6 +75,7 @@ class Proyectil_2(pygame.sprite.Sprite):
 
 jugador = Jugador()
 enemigos = pygame.sprite.Group()
+enemigos_disp = pygame.sprite.Group()
 proyectiles_1 = pygame.sprite.Group()
 proyectiles_2 = pygame.sprite.Group()
 todos = pygame.sprite.Group(jugador)
@@ -84,10 +86,19 @@ for fila in range(4):
     for columna in range(10):
         x = 50 + columna * 70
         y = 50 + fila * 70
-        if fila < 2:  # Las primeras dos filas tienen el mismo tipo de enemigos
+        if fila < 1:  # Las primeras dos filas tienen dos tipo de enemigos
+            imagen = imagenes_enemigos[2]
+        elif fila == 2:
             imagen = imagenes_enemigos[0]
-        else:  # Las últimas dos filas tienen otro tipo de enemigos
-            imagen = imagenes_enemigos[1]
+        elif fila == 3 :
+            imagen = imagenes_enemigos [1]
+        else:  # Las últimas fila tiene otro tipo de enemigos
+            imagen = imagenes_enemigos[3]
+
+            enemigo_disp = Enemigo(x, y, imagen)
+            enemigos_disp.add(enemigo_disp)
+            todos.add(enemigo_disp)
+
         enemigo = Enemigo(x, y, imagen)
         enemigos.add(enemigo)
         todos.add(enemigo)
@@ -107,7 +118,7 @@ while corriendo:
 
     # Los enemigos disparan aleatoriamente
     if pygame.time.get_ticks() - tiempo_ultimo_disparo > 2000:  # Han pasado 2 segundos desde el último disparo
-        disparador = random.choice(enemigos.sprites())
+        disparador = random.choice(enemigos_disp.sprites())
         if disparador:
             proyectil = Proyectil_2(*disparador.rect.center, 5)
             proyectiles_2.add(proyectil)
@@ -118,10 +129,13 @@ while corriendo:
     
     for proyectil in proyectiles_1:
         
-        enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos, True)
+        enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos,enemigos_disp, True)
         for enemigo in enemigos_alcanzados:
             proyectil.kill()
             todos.remove(enemigo)
+        for enemigo_disp in enemigos_alcanzados:
+            proyectil.kill()
+            todos.remove(enemigos_disp)
 
     # Comprobar si algún proyectil ha alcanzado al jugador
     if pygame.sprite.spritecollide(jugador, proyectiles_2, True):
@@ -154,5 +168,8 @@ while corriendo:
 
     pygame.display.flip()
     pygame.time.delay(10)
+
+
+
 
 

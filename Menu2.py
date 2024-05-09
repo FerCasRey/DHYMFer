@@ -65,11 +65,27 @@ def show_menu():
     window.blit(option6_text, (50, 350))
 
 def space():
+    window.fill(color2[colorInd])
+    spaceInst = "Dispara a las naves enemigas pulsando la barra espaciadora y esquiva sus disparos usando A y D para moverte a izquiera y derecha."
+    blit_text(window, spaceInst, (0,0),font, color1[colorInd])
     print("Ejecutando Space Invaders")
-    from subprocess import call
-    call(['python', 'SpaceInvaders.py'])
-    pygame.quit()
-    sys.exit()
+    running =  True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+                
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                if event.key == pygame.K_KP_ENTER:        
+                    from subprocess import call
+                    call(['python', 'SpaceInvaders.py'])
+                    pygame.quit()
+                    sys.exit()
+    
+    pygame.display.update()
     # Add your code for Option 2 here
 
 def tetris():

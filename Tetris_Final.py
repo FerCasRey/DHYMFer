@@ -187,12 +187,13 @@ class Tetris:
         pygame.init()
         score_font = pygame.font.SysFont(None, 30)
         scores = self.load_scores()
+        scores.sort(key=lambda x: int(x.split(": ")[1]), reverse=True)  # Sort scores by score value in descending order
         screen = pygame.display.set_mode((300, 300))
         pygame.display.set_caption("Scores")
         screen.fill(BLACK)
         y = 30
         for score in scores:
-            text = score_font.render(score, True, WHITE)
+            text = score_font.render(score.strip(), True, WHITE)
             screen.blit(text, (10, y))
             y += 30
         pygame.display.update()
@@ -201,6 +202,7 @@ class Tetris:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
+
 
     # Function to load scores from the file
     def load_scores(self):

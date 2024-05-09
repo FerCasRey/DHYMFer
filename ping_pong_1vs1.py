@@ -1,7 +1,6 @@
 import os
 import pygame
 import random
-import time
 
 # Inicialización de Pygame
 pygame.init()
@@ -19,7 +18,7 @@ BLACK = (0, 0, 0)
 BALL_RADIUS = 10
 ball_pos = [WIDTH // 2, HEIGHT // 2]
 ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
-ball_moving = False
+ball_served = False
 
 # Variables de las paletas
 PAD_WIDTH = 10
@@ -32,10 +31,6 @@ PAD_SPEED = 5
 score_left = 0
 score_right = 0
 font = pygame.font.Font(None, 36)
-
-# Nombres de los jugadores
-player1_name = ""
-player2_name = ""
 
 # Función para dibujar la pelota
 def draw_ball(ball_pos):
@@ -52,8 +47,16 @@ def draw_score():
     score_rect = score_text.get_rect(center=(WIDTH // 2, 50))
     WIN.blit(score_text, score_rect)
 
-# Función para mostrar mensaje de ganador
+# Function to save the player's score and name
+def save_score(player_name, score):
+    documents_path = os.path.join(os.path.expanduser("~"), "Documents")
+    file_path = os.path.join(documents_path, "scores.txt")
+    with open(file_path, "a") as file:
+        file.write(f"{player_name} ha ganado")
+
+# Función para mostrar mensaje de ganador y guardar el puntaje
 def display_winner(winner):
+    save_score(winner, max(score_left, score_right))
     winner_text = font.render(f"¡{winner} ha ganado!", True, WHITE)
     winner_rect = winner_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     WIN.blit(winner_text, winner_rect)
@@ -103,7 +106,7 @@ def countdown():
 
 # Función principal del juego
 def main():
-    global ball_pos, ball_vel, ball_moving, score_left, score_right
+    global ball_pos, ball_vel, ball_served, score_left, score_right
     clock = pygame.time.Clock()
 
     # Obtener los nombres de los jugadores
@@ -118,12 +121,12 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    if not ball_moving:
-                        ball_moving = True
+                    if not ball_served:
+                        ball_served = True
                         ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
                     else:
                         ball_pos = [WIDTH // 2, HEIGHT // 2]
-                        ball_moving = False
+                        ball_served = False
                 elif event.key == pygame.K_ESCAPE:  # Detectar la tecla ESC
                     running = False  # Salir del bucle del juego si se presiona ESC
 
@@ -139,7 +142,7 @@ def main():
             RIGHT_PAD_POS[1] += PAD_SPEED
 
         # Actualizar la posición de la pelota si está en movimiento
-        if ball_moving:
+        if ball_served:
             ball_pos[0] += ball_vel[0]
             ball_pos[1] += ball_vel[1]
 
@@ -157,7 +160,7 @@ def main():
                         display_winner(player2_name)
                         running = False
                     ball_pos = [WIDTH // 2, HEIGHT // 2]
-                    ball_moving = False
+                    ball_served = False
             elif ball_pos[0] >= WIDTH - PAD_WIDTH - BALL_RADIUS:
                 if ball_pos[1] >= RIGHT_PAD_POS[1] and ball_pos[1] <= RIGHT_PAD_POS[1] + PAD_HEIGHT:
                     ball_vel[0] = -ball_vel[0]
@@ -167,7 +170,7 @@ def main():
                         display_winner(player1_name)
                         running = False
                     ball_pos = [WIDTH // 2, HEIGHT // 2]
-                    ball_moving = False
+                    ball_served = False
 
         # Limpiar la pantalla
         WIN.fill(BLACK)

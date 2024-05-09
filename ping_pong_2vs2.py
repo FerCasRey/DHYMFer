@@ -116,7 +116,16 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    ball_served = True
+                    if not ball_served:
+                        ball_served = True
+                        ball_vel = [random.choice([-5, 5]), random.choice([-5, 5])]
+                    else:
+                        ball_pos = [WIDTH // 2, HEIGHT // 2]
+                        ball_served = False
+                elif event.key == pygame.K_ESCAPE:  # Detectar la tecla ESC
+                    running = False  # Salir del bucle del juego si se presiona ESC
+
+        # Movimiento de las paletas
 
         # Movimiento de las paletas del equipo 1
         keys = pygame.key.get_pressed()

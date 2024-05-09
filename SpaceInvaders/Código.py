@@ -86,23 +86,27 @@ for fila in range(4):
     for columna in range(10):
         x = 50 + columna * 70
         y = 50 + fila * 70
-        if fila < 1:  # Las primeras dos filas tienen dos tipo de enemigos
+        if fila == 0:  # Las primeras dos filas tienen dos tipo de enemigos
             imagen = imagenes_enemigos[2]
-        elif fila == 2:
+            
+
+        elif fila == 1:
             imagen = imagenes_enemigos[0]
-        elif fila == 3 :
+            
+        elif fila == 2 :
             imagen = imagenes_enemigos [1]
-        else:  # Las últimas fila tiene otro tipo de enemigos
+           
+
+        elif fila == 3:  # Las últimas fila tiene otro tipo de enemigos
             imagen = imagenes_enemigos[3]
-
-            enemigo_disp = Enemigo(x, y, imagen)
-            enemigos_disp.add(enemigo_disp)
-            todos.add(enemigo_disp)
-
-        enemigo = Enemigo(x, y, imagen)
-        enemigos.add(enemigo)
-        todos.add(enemigo)
-
+        #enemigo = Enemigo(x, y, imagen)
+        #enemigos.add(enemigo)
+        #todos.add(enemigo)
+        enemigo_disp = Enemigo(x, y, imagen)
+        enemigos_disp.add(enemigo_disp)
+        todos.add(enemigo_disp)
+  
+        
 # Bucle principal del juego
 corriendo = True
 tiempo_ultimo_disparo = pygame.time.get_ticks()
@@ -123,19 +127,23 @@ while corriendo:
             proyectil = Proyectil_2(*disparador.rect.center, 5)
             proyectiles_2.add(proyectil)
             todos.add(proyectil)
-            tiempo_ultimo_disparo = pygame.time.get_ticks()
+            tiempo_ultimo_disparo = pygame.time.get_ticks()  
 
     todos.update()
     
     for proyectil in proyectiles_1:
         
-        enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos,enemigos_disp, True)
+        enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos_disp, True)
+        
+        for enemigo_disp in enemigos_alcanzados:
+            proyectil.kill()
+            todos.remove(enemigo_disp)
+    for proyectil in proyectiles_1:
+        
+        enemigos_alcanzados = pygame.sprite.spritecollide(proyectil, enemigos, True)
         for enemigo in enemigos_alcanzados:
             proyectil.kill()
             todos.remove(enemigo)
-        for enemigo_disp in enemigos_alcanzados:
-            proyectil.kill()
-            todos.remove(enemigos_disp)
 
     # Comprobar si algún proyectil ha alcanzado al jugador
     if pygame.sprite.spritecollide(jugador, proyectiles_2, True):
@@ -165,10 +173,9 @@ while corriendo:
     # Dibujar el contador de vidas
     texto_vidas = fuente.render(f"Vidas: {jugador.vidas}", True, (255, 255, 255))
     pantalla.blit(texto_vidas, (ancho - texto_vidas.get_width() - 10, 10))
-
+    
     pygame.display.flip()
     pygame.time.delay(10)
-
 
 
 

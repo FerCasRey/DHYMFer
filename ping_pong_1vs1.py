@@ -33,6 +33,10 @@ score_left = 0
 score_right = 0
 font = pygame.font.Font(None, 36)
 
+# Nombres de los jugadores
+player1_name = ""
+player2_name = ""
+
 # Función para dibujar la pelota
 def draw_ball(ball_pos):
     pygame.draw.circle(WIN, WHITE, ball_pos, BALL_RADIUS)
@@ -120,6 +124,8 @@ def main():
                     else:
                         ball_pos = [WIDTH // 2, HEIGHT // 2]
                         ball_moving = False
+                elif event.key == pygame.K_ESCAPE:  # Detectar la tecla ESC
+                    running = False  # Salir del bucle del juego si se presiona ESC
 
         # Movimiento de las paletas
         keys = pygame.key.get_pressed()

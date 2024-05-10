@@ -1,6 +1,7 @@
 import pygame
 import sys
 import webbrowser
+import textwrap
 
 # Initialize Pygame
 pygame.init()
@@ -21,25 +22,6 @@ colorInd = 0
 color1 = [(255, 255, 255), (0,0,0), (0,40,255), (255,0,0), (0,255,0), (51,88,34)]
 color2 = [(0, 0, 0), (255,255,255), (0,0,0), (0,0,0), (0,0,0), (181,165,86)]
 theme = ['Noche', 'Día', 'Aqua', 'Igni', 'Matcha', 'GBoy']
-
-# Render Text
-def blit_text(surface, text, pos, font, color):
-    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
-    space = font.size(' ')[0]  # The width of a space.
-    max_width, max_height = surface.get_size()
-    x, y = pos
-    for line in words:
-        for word in line:
-            word_surface = font.render(word, True, color)
-            word_width, word_height = word_surface.get_size()
-            if x + word_width >= max_width:
-                x = pos[0]  # Reset the x.
-                y += word_height + 2  # Start on new row.
-            surface.blit(word_surface, (x, y))
-            x += word_width + space
-        x = pos[0]  # Reset the x.
-        y += word_height  # Start on new row.
-
 
 def show_menu():
     window.fill(color2[colorInd])
@@ -64,32 +46,61 @@ def show_menu():
     option6_text = font.render("6. Cerrar", True, color1[colorInd])
     window.blit(option6_text, (50, 350))
 
-def space():
-    window.fill(color2[colorInd])
-    spaceInst = "Dispara a las naves enemigas pulsando la barra espaciadora y esquiva sus disparos usando A y D para moverte a izquiera y derecha."
-    blit_text(window, spaceInst, (0,0),font, color1[colorInd])
-    print("Ejecutando Space Invaders")
-    running =  True
+def pong():
+    pygame.display.set_caption("Pong - Selector de modo")
+    running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
-                if event.key == pygame.K_KP_ENTER:        
+                if event.key == pygame.K_1: # one player
+                    print("Ejecutando Pong (1 vs 1)")
                     from subprocess import call
-                    call(['python', 'SpaceInvaders.py'])
+                    call(['python', 'ping_pong_1vs1.py'])
                     pygame.quit()
                     sys.exit()
-    
-    pygame.display.update()
-    # Add your code for Option 2 here
+                if event.key == pygame.K_2: # two players
+                    print("Ejecutando Pong (2 vs 2)")
+                    from subprocess import call
+                    call(['python', 'ping_pong_2vs2.py'])
+                    pygame.quit()
+                    sys.exit()
+
+        window.fill(color2[colorInd])
+
+        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
+        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        window.blit(pong1, pong1Rec)
+
+        pong1Rul = "Protege la tu portería moviendo la pala. ¡El primero en llegar a los 10 puntos gana!\nJugador 1 -> W(subir) S(bajar)\nJugador 2 -> ArrUp (subir) ArrDown(bajar)"
+        wrapped_lines = render_text(pong1Rul, font, WINDOW_WIDTH - 100)
+        for i, line in enumerate(wrapped_lines):
+            line_surface = font.render(line, True, color1[colorInd])
+            window.blit(line_surface, (100, 200 + i * 30))
+
+        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
+        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 175))
+        window.blit(pong2, pong2Rec)
+
+
+        pygame.display.update()
+
+    # Add your code for Option 1 here
+
+def render_text(text, font, max_width):
+    """Render a long text into multiple lines if it's too long to fit on the screen."""
+    wrapped_lines = textwrap.wrap(text, width=int(max_width / font.size('A')[0]))
+    return wrapped_lines
+
+def space():
+    from subprocess import call
+    call(['python', 'SpaceInvaders.py'])
 
 def tetris():
-    print("Ejectando Tetris")
     from subprocess import call
     call(['python', 'Tetris.py'])
 
@@ -128,53 +139,6 @@ def main():
 
         show_menu()
         pygame.display.update()
-
-def pong():
-    pygame.display.set_caption("Pong - Selector de modo")
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
-                    running = False
-                if event.key == pygame.K_1: # one player
-                    print("Ejecutando Pong (1 vs 1)")
-                    from subprocess import call
-                    call(['python', 'ping_pong_1vs1.py'])
-                    pygame.quit()
-                    sys.exit()
-                if event.key == pygame.K_2: # two players
-                    print("Ejecutando Pong (2 vs 2)")
-                    call(['python', 'ping_pong_2vs2.py'])
-                    pygame.quit()
-                    sys.exit()
-
-        window.fill(color2[colorInd])
-
-        pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
-        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
-        window.blit(pong1, pong1Rec)
-
-        pong1Rul = " \
-                    Golpea la pelota con tu pala para proteger tu portería e intentar marcar en la portería del contrario.\n \
-                    Jugador 1 -> W (subir) / S (bajar)\n \
-                    Jugador 2 -> Flecha Arriba (subir) / Flecha abajo (bajar)\
-                    "
-        blit_text(window, pong1Rul, (20, 150), font, color1[colorInd])
-        #pong1Rul = font.render("Jugador 1: W - subir. S - bajar." + "\n" + "Jugador 2: Flecha arriba - subir. Flecha abajo - bajar.", True, color1[colorInd])
-        #pong1RulRec = pong1Rul.get_rect(center=(WINDOW_WIDTH // 2, 150))
-        #window.blit(pong1Rul, pong1RulRec)
-
-        pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
-        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 375))
-        window.blit(pong2, pong2Rec)
-
-
-        pygame.display.update()
-
 
 def config():
     pygame.display.set_caption("Configuración")
@@ -238,7 +202,7 @@ def credits():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                     running = False
-                if event.key == pygame.K_b: # Open Issues from GitHub repo
+                if event.key == pygame.K_b: # open issues of github repo
                     url = 'https://github.com/FerCasRey/DHYMFer/issues'
                     webbrowser.open_new_tab(url)
 

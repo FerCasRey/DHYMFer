@@ -1,4 +1,4 @@
-import pygame
+import pygame # type: ignore
 import sys
 import webbrowser
 import textwrap
@@ -46,7 +46,7 @@ def show_menu():
     option6_text = font.render("6. Cerrar", True, color1[colorInd])
     window.blit(option6_text, (50, 350))
 
-def pong():
+def pong(): # Display Pong selection menu
     pygame.display.set_caption("Pong - Selector de modo")
     running = True
     while running:
@@ -61,48 +61,132 @@ def pong():
                     print("Ejecutando Pong (1 vs 1)")
                     from subprocess import call
                     call(['python', 'Games/Pong/Pong1v1.py'])
-                    pygame.quit()
-                    sys.exit()
+                    
                 if event.key == pygame.K_2: # two players
                     print("Ejecutando Pong (2 vs 2)")
                     from subprocess import call
                     call(['python', 'Games/Pong/Pong2v2.py'])
-                    pygame.quit()
-                    sys.exit()
+                    
 
         window.fill(color2[colorInd])
 
+        
+        #Instrucciones generales
+        pongRul1 = font.render("Protege tu portería moviendo las palas.", True, color1[colorInd])
+        pongRul1Rec = pongRul1.get_rect(center=(WINDOW_WIDTH//2, 60))
+        window.blit(pongRul1, pongRul1Rec)
+
+        pongRul2 = font.render("¡El primero en llegar a los 10 puntos gana!", True, color1[colorInd])
+        pongRul2Rec = pongRul2.get_rect(center=(WINDOW_WIDTH//2, 90))
+        window.blit(pongRul2, pongRul2Rec)
+
+        #Instrucciones Pong 1v1
         pong1 = font.render("1. Pong 1 contra 1", True, color1[colorInd])
-        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 125))
+        pong1Rec = pong1.get_rect(center=(WINDOW_WIDTH // 2, 160))
         window.blit(pong1, pong1Rec)
 
-        pong1Rul = "Protege la tu portería moviendo la pala. ¡El primero en llegar a los 10 puntos gana!\nJugador 1 -> W(subir) S(bajar)\nJugador 2 -> ArrUp (subir) ArrDown(bajar)"
-        wrapped_lines = render_text(pong1Rul, font, WINDOW_WIDTH - 100)
-        for i, line in enumerate(wrapped_lines):
-            line_surface = font.render(line, True, color1[colorInd])
-            window.blit(line_surface, (100, 200 + i * 30))
-
+        pong1Rul1 = font.render("Jugador 1 -> W(subir) S(bajar)", True, color1[colorInd])
+        pong1Rul1Rec = pong1Rul1.get_rect(center=(WINDOW_WIDTH//2, 200))
+        window.blit(pong1Rul1, pong1Rul1Rec)
+        
+        pong1Rul2 = font.render("Jugador 2 -> ArrUp(subir) ArrDown(bajar)", True, color1[colorInd])
+        pong1Rul2Rec = pong1Rul2.get_rect(center=(WINDOW_WIDTH//2, 230))
+        window.blit(pong1Rul2, pong1Rul2Rec)
+        
+        #Instrucciones Pong 2v2
         pong2 = font.render("2. Pong 2 contra 2", True, color1[colorInd])
-        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 175))
+        pong2Rec = pong2.get_rect(center=(WINDOW_WIDTH // 2, 300))
         window.blit(pong2, pong2Rec)
+
+        pong2Rul1 = font.render("Jugador 1.1 -> W(subir) S(bajar)", True, color1[colorInd])
+        pong2Rul1Rec = pong2Rul1.get_rect(center=(WINDOW_WIDTH//2, 360))
+        window.blit(pong2Rul1, pong2Rul1Rec)
+        
+        pong2Rul2 = font.render("Jugador 1.2 -> T(subir) G(bajar)", True, color1[colorInd])
+        pong2Rul2Rec = pong2Rul2.get_rect(center=(WINDOW_WIDTH//2, 390))
+        window.blit(pong2Rul2, pong2Rul2Rec)
+
+        pong2Rul3 = font.render("Jugador 2.1 -> O(subir) L(bajar)", True, color1[colorInd])
+        pong2Rul3Rec = pong2Rul3.get_rect(center=(WINDOW_WIDTH//2, 430))
+        window.blit(pong2Rul3, pong2Rul3Rec)
+        
+        pong2Rul4 = font.render("Jugador 2.2 -> ArrUp(subir) ArrDown(bajar)", True, color1[colorInd])
+        pong2Rul4Rec = pong2Rul4.get_rect(center=(WINDOW_WIDTH//2, 460))
+        window.blit(pong2Rul4, pong2Rul4Rec)
 
 
         pygame.display.update()
 
-    # Add your code for Option 1 here
+def SpaceInvaders(): # Display Pong selection menu
+    pygame.display.set_caption("Space Invaders")
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
+                    running = False
+                if event.key == pygame.K_1: # one player                    
+                    from subprocess import call
+                    call(['python', 'Games/SpaceInvaders/SpaceInvaders.py'])
 
-def render_text(text, font, max_width):
-    """Render a long text into multiple lines if it's too long to fit on the screen."""
-    wrapped_lines = textwrap.wrap(text, width=int(max_width / font.size('A')[0]))
-    return wrapped_lines
+        window.fill(color2[colorInd])
+        gameName = font.render("1. Space Invaders", True, color1[colorInd])
+        gameNameRec = gameName.get_rect(center=(WINDOW_WIDTH//2, 100))
+        window.blit(gameName, gameNameRec)
 
-def space():
-    from subprocess import call
-    call(['python', 'Games/SpaceInvaders/SpaceInvaders.py'])
+        gameRul1 = font.render("¡Dispara a los enemigos para salvar el mundo!", True, color1[colorInd])
+        gameRul1Rec = gameRul1.get_rect(center=(WINDOW_WIDTH//2, 150))
+        window.blit(gameRul1, gameRul1Rec)
+
+        gameRul2 = font.render("Barra espaciadora (disparar)", True, color1[colorInd])
+        gameRul2Rec = gameRul2.get_rect(center=(WINDOW_WIDTH//2, 180))
+        window.blit(gameRul2, gameRul2Rec)
+        
+        gameRul3 = font.render("ArrLeft / ArrRight (desplazarse)", True, color1[colorInd])
+        gameRul3Rec = gameRul3.get_rect(center=(WINDOW_WIDTH//2, 210))
+        window.blit(gameRul3, gameRul3Rec)
+
+        pygame.display.update()
+
+    
 
 def tetris():
-    from subprocess import call
-    call(['python', 'Games/Tetris/Tetris.py'])
+    pygame.display.set_caption("Tetris")
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
+                    running = False
+                if event.key == pygame.K_1: # one player                    
+                    from subprocess import call
+                    call(['python', 'Games/Tetris/Tetris.py'])
+
+        window.fill(color2[colorInd])
+        gameName = font.render("1. Tetris", True, color1[colorInd])
+        gameNameRec = gameName.get_rect(center=(WINDOW_WIDTH//2, 100))
+        window.blit(gameName, gameNameRec)
+
+        gameRul1 = font.render("Gana puntos completando líneas", True, color1[colorInd])
+        gameRul1Rec = gameRul1.get_rect(center=(WINDOW_WIDTH//2, 150))
+        window.blit(gameRul1, gameRul1Rec)
+
+        gameRul2 = font.render("ArrUp (girar)", True, color1[colorInd])
+        gameRul2Rec = gameRul2.get_rect(center=(WINDOW_WIDTH//2, 180))
+        window.blit(gameRul2, gameRul2Rec)
+        
+        gameRul3 = font.render("ArrLeft / ArrRight (desplazar la pieza)", True, color1[colorInd])
+        gameRul3Rec = gameRul3.get_rect(center=(WINDOW_WIDTH//2, 210))
+        window.blit(gameRul3, gameRul3Rec)
+
+        pygame.display.update()
+    
 
 def option3():
     print('Mostrando Configuración')
@@ -125,7 +209,7 @@ def main():
                 if event.key == pygame.K_1:
                     pong()
                 elif event.key == pygame.K_2:
-                    space()
+                    SpaceInvaders()
                 elif event.key == pygame.K_3:
                     tetris()
                 elif event.key == pygame.K_4:

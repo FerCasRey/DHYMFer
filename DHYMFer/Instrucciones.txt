@@ -1,8 +1,9 @@
 Instrucciones para jugar:
 
 1 - Abre la terminal pulsado WIN + R y escribiendo "cmd"
-2 - Selecciona el directorio donde se encuantra la carpeta DHYMFer que has descargado
+2 - Instala pygame escribiendo "pip install pygame"
+3 - Selecciona el directorio donde se encuantra la carpeta DHYMFer que has descargado
     - Escribe "cd" seguido de la ruta
     - Ejemplo: cd C:\users\admin\downloads\DHYMFer
-3 - Para activar el lanzador, escribe "python DHYMFer_Launcher.py" y pulsa "enter"
-4 - ¡Diviértete!
+4 - Para activar el lanzador, escribe "python DHYMFer_Launcher.py" y pulsa "enter"
+5 - ¡Diviértete!

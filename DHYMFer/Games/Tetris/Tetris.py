@@ -14,13 +14,13 @@ WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 BLACK = (0, 0, 0)
 SHAPES = [
-    [[1, 1, 1, 1]],               # I
-    [[1, 1, 1], [0, 1, 0]],      # T
-    [[1, 1, 1], [1, 0, 0]],      # L
-    [[1, 1, 1], [0, 0, 1]],      # J
-    [[0, 1, 1], [1, 1, 0]],      # S
-    [[1, 1], [1, 1]],            # O
-    [[1, 1, 0], [0, 1, 1]]       # Z
+    {"shape": [[1, 1, 1, 1]], "color": (0, 255, 255)},           # I (Cyan)
+    {"shape": [[1, 1, 1], [0, 1, 0]], "color": (255, 0, 255)},   # T (Magenta)
+    {"shape": [[1, 1, 1], [1, 0, 0]], "color": (0, 0, 255)},     # L (Blue)
+    {"shape": [[1, 1, 1], [0, 0, 1]], "color": (255, 165, 0)},   # J (Orange)
+    {"shape": [[0, 1, 1], [1, 1, 0]], "color": (0, 255, 0)},     # S (Green)
+    {"shape": [[1, 1], [1, 1]], "color": (255, 255, 0)},         # O (Yellow)
+    {"shape": [[1, 1, 0], [0, 1, 1]], "color": (255, 0, 0)}      # Z (Red)
 ]
 
 # Class for the Tetris game
@@ -41,7 +41,9 @@ class Tetris:
 
     # Function to generate a random shape
     def generate_shape(self):
-        self.current_shape = random.choice(SHAPES)
+        shape_info = random.choice(SHAPES)
+        self.current_shape = shape_info["shape"]
+        self.current_shape_color = shape_info["color"]
         self.current_shape_row = 0
         self.current_shape_col = COLS // 2 - len(self.current_shape[0]) // 2
 
@@ -87,7 +89,7 @@ class Tetris:
         for row in range(len(self.current_shape)):
             for col in range(len(self.current_shape[0])):
                 if self.current_shape[row][col]:
-                    self.board[self.current_shape_row + row][self.current_shape_col + col] = 1
+                    self.board[self.current_shape_row + row][self.current_shape_col + col] = self.current_shape_color
         lines_cleared = self.check_lines()
         self.score += lines_cleared * 100
         self.generate_shape()
@@ -107,12 +109,13 @@ class Tetris:
         self.screen.fill(BLACK)
         for row in range(ROWS):
             for col in range(COLS):
-                if self.board[row][col]:
-                    pygame.draw.rect(self.screen, WHITE, (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+                color = self.board[row][col]
+                if color:
+                    pygame.draw.rect(self.screen, color, (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         for row in range(len(self.current_shape)):
             for col in range(len(self.current_shape[0])):
                 if self.current_shape[row][col]:
-                    pygame.draw.rect(self.screen, GRAY, ((self.current_shape_col + col) * BLOCK_SIZE, (self.current_shape_row + row) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                    pygame.draw.rect(self.screen, self.current_shape_color, ((self.current_shape_col + col) * BLOCK_SIZE, (self.current_shape_row + row) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
         font = pygame.font.SysFont(None, 30)
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.screen.blit(text, (10, 10))
@@ -120,7 +123,7 @@ class Tetris:
 
     # Function to get player name
     def get_player_name(self):
-        self.screen.fill(BLACK)
+        
         font = pygame.font.Font(None, 30)
         input_text = ""
         while True:
@@ -132,12 +135,14 @@ class Tetris:
                         input_text = input_text[:-1]
                     else:
                         input_text += event.unicode
-            
+        
+            self.screen.fill(BLACK)  # Clear the screen
             text_surface = font.render("Enter your name", True, WHITE)
             inputText = font.render(input_text, True, WHITE)
             self.screen.blit(text_surface, (10, SCREEN_HEIGHT // 2))
             self.screen.blit(inputText, (SCREEN_WIDTH//2 - 25, SCREEN_HEIGHT // 2 + 50))
-            pygame.display.update()
+            pygame.display.update()  # Update the display
+
 
     # Function to run the game loop
     def run(self):
@@ -179,20 +184,22 @@ class Tetris:
             pygame.display.flip()
 
     # Function to save the player's score and name
-
     def save_score(self):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(script_dir, "scores.txt")
         with open(file_path, "a") as file:
             file.write(f"{self.player_name}: {self.score}\n")
 
+    # Function to show scores
     def show_scores(self):
         self.screen.fill(BLACK)
         score_font = pygame.font.Font(None, 30)
         scores = self.load_scores()
         scores.sort(key=lambda x: int(x.split(": ")[1]), reverse=True)  # Sort scores by score value in descending order
         pygame.display.set_caption("Scores")
-        y = 30
+        text = score_font.render("MEJORES PUNTUACIONES:", True, WHITE)
+        self.screen.blit(text,( 10, 20))
+        y = 80
         for score in scores:
             text = score_font.render(score.strip(), True, WHITE)
             self.screen.blit(text, (10, y))
@@ -207,30 +214,6 @@ class Tetris:
                     if event.key == pygame.K_ESCAPE:  # Allow the user to press ESC to return to the main menu
                         pygame.quit()
                         sys.exit() 
-        
-
-
-    # Function to display scores in a pop-up
-    #def show_scores(self):
-        pygame.init()
-        score_font = pygame.font.SysFont(None, 30)
-        scores = self.load_scores()
-        scores.sort(key=lambda x: int(x.split(": ")[1]), reverse=True)  # Sort scores by score value in descending order
-        screen = pygame.display.set_mode((300, 300))
-        pygame.display.set_caption("Scores")
-        screen.fill(BLACK)
-        y = 30
-        for score in scores:
-            text = score_font.render(score.strip(), True, WHITE)
-            screen.blit(text, (10, y))
-            y += 30
-        pygame.display.update()
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
-
 
     # Function to load scores from the file
     def load_scores(self):

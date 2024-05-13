@@ -1,5 +1,5 @@
 import os
-import pygame
+import pygame #type: ignore
 import random
 
 # Inicialización de Pygame
@@ -139,13 +139,13 @@ def main():
             TEAM1_RIGHT_PAD_POS[1] += PAD_SPEED
 
         # Movimiento de las paletas del equipo 2
-        if keys[pygame.K_UP] and TEAM2_LEFT_PAD_POS[1] > 0:
+        if keys[pygame.K_o] and TEAM2_LEFT_PAD_POS[1] > 0:
             TEAM2_LEFT_PAD_POS[1] -= PAD_SPEED
-        if keys[pygame.K_DOWN] and TEAM2_LEFT_PAD_POS[1] < HEIGHT // 2 - PAD_HEIGHT:
+        if keys[pygame.K_l] and TEAM2_LEFT_PAD_POS[1] < HEIGHT // 2 - PAD_HEIGHT:
             TEAM2_LEFT_PAD_POS[1] += PAD_SPEED
-        if keys[pygame.K_o] and TEAM2_RIGHT_PAD_POS[1] > HEIGHT // 2:
+        if keys[pygame.K_UP] and TEAM2_RIGHT_PAD_POS[1] > HEIGHT // 2:
             TEAM2_RIGHT_PAD_POS[1] -= PAD_SPEED
-        if keys[pygame.K_l] and TEAM2_RIGHT_PAD_POS[1] < HEIGHT - PAD_HEIGHT:
+        if keys[pygame.K_DOWN] and TEAM2_RIGHT_PAD_POS[1] < HEIGHT - PAD_HEIGHT:
             TEAM2_RIGHT_PAD_POS[1] += PAD_SPEED
 
         # Iniciar el movimiento de la pelota cuando se presiona Enter

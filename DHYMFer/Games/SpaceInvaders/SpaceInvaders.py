@@ -1,4 +1,4 @@
-import pygame
+import pygame #type: ignore
 import sys
 import random
 
@@ -106,6 +106,30 @@ for fila in range(4):
         enemigos_disp.add(enemigo_disp)
         todos.add(enemigo_disp)
   
+
+    
+# Bucle de partida ganada
+def win():
+    corriendo = True
+    while corriendo:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        pantalla.fill((0,0,0))
+        text1 = fuente.render("¡Has salvado el mundo!", True, (255,255,255))
+        text1Rec = text1.get_rect(center=(ancho//2, 100))
+        pantalla.blit(text1,text1Rec)
+
+        text2 = fuente.render('Pulsa \'escape\' para salir', True, (255,255,255))
+        text2Rec = text2.get_rect(center=(ancho//2, 170))
+        pantalla.blit(text2,text2Rec)
+
+        pygame.display.update()
         
 # Bucle principal del juego
 corriendo = True
@@ -115,19 +139,29 @@ while corriendo:
         if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
-            proyectil = Proyectil_1(*jugador.rect.center, -5)
-            proyectiles_1.add(proyectil)
-            todos.add(proyectil)
-
+        elif evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+            if evento.key == pygame.K_SPACE:
+                proyectil = Proyectil_1(*jugador.rect.center, -5)
+                proyectiles_1.add(proyectil)
+                todos.add(proyectil)
+            
     # Los enemigos disparan aleatoriamente
     if pygame.time.get_ticks() - tiempo_ultimo_disparo > 2000:  # Han pasado 2 segundos desde el último disparo
-        disparador = random.choice(enemigos_disp.sprites())
-        if disparador:
-            proyectil = Proyectil_2(*disparador.rect.center, 5)
-            proyectiles_2.add(proyectil)
-            todos.add(proyectil)
-            tiempo_ultimo_disparo = pygame.time.get_ticks()  
+        # Comprueba si quedan enemigos. Si no, muestra mensaje.
+        if len(enemigos_disp) == 0:
+            
+            win()
+            corriendo = False
+        else:
+            disparador = random.choice(enemigos_disp.sprites())
+            if disparador:
+                proyectil = Proyectil_2(*disparador.rect.center, 5)
+                proyectiles_2.add(proyectil)
+                todos.add(proyectil)
+                tiempo_ultimo_disparo = pygame.time.get_ticks()  
 
     todos.update()
     
@@ -176,7 +210,3 @@ while corriendo:
     
     pygame.display.flip()
     pygame.time.delay(10)
-
-
-
-

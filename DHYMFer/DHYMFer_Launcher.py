@@ -185,6 +185,11 @@ def tetris():
         gameRul3Rec = gameRul3.get_rect(center=(WINDOW_WIDTH//2, 210))
         window.blit(gameRul3, gameRul3Rec)
 
+        gameRul4 = font.render("ArrDown (bajar la pieza) (pulsar repetidamente)", True, color1[colorInd])
+        gameRul4Rec = gameRul4.get_rect(center=(WINDOW_WIDTH//2, 240))
+        window.blit(gameRul4, gameRul4Rec)
+
+
         pygame.display.update()
     
 

@@ -43,7 +43,7 @@ class Enemigo(pygame.sprite.Sprite):
         self.rect.move_ip(self.direccion, 0)
         if self.rect.left < 0 or self.rect.right > ancho:
             self.direccion *= -1  # Cambia de dirección
-            if pygame.time.get_ticks() - self.tiempo_ultimo_cambio > 10000:  # Han pasado 10 segundos
+            if pygame.time.get_ticks() - self.tiempo_ultimo_cambio > 12000:  # Han pasado 10 segundos
                 self.rect.move_ip(0, self.image.get_height())  # Baja una fila
                 self.tiempo_ultimo_cambio = pygame.time.get_ticks()
 

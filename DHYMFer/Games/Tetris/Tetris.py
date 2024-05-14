@@ -154,6 +154,9 @@ class Tetris:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.move_left()
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
                     elif event.key == pygame.K_RIGHT:
                         self.move_right()
                     elif event.key == pygame.K_DOWN:
